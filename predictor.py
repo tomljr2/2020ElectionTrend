@@ -38,10 +38,13 @@ for race in data['data']['races']:
 
    if state_trump_expected > state_biden_expected:
       trump_electoral_votes += race['electoral_votes']
-      print(race['state_name'] + ':\tR +' + str(race['electoral_votes']))
+#      print(race['state_name'] + ':\tR +' + str(race['electoral_votes']),end='')
+      print('{:<20s} {:<10s}'.format(race['state_name'], 'R +' + str(race['electoral_votes'])),end='')
    else:
       biden_electoral_votes += race['electoral_votes']
-      print(race['state_name'] + ':\tD +' + str(race['electoral_votes']))
+#      print(race['state_name'] + ':\tD +' + str(race['electoral_votes']), end='')
+      print('{:<20s} {:<10s}'.format(race['state_name'], 'D +' + str(race['electoral_votes'])),end='')
+   print(' Gap: ' + str(abs(state_trump_expected - state_biden_expected)))
 
 print('\nTrump electoral votes: ' + str(trump_electoral_votes))
 print('Biden electoral votes: ' + str(biden_electoral_votes))
