@@ -1,6 +1,12 @@
 import json
 import math
 
+class Color:
+   BLUE = '\033[94m'
+   RED = '\033[91m'
+   BOLD = '\033[1m'
+   END = '\033[0m'
+
 with open('results.json') as f:
    data = json.load(f)
 
@@ -36,17 +42,24 @@ for race in data['data']['races']:
       state_trump_expected += county_trump_expected
       state_biden_expected += county_biden_expected
 
+   remaining = (state_trump_expected + state_biden_expected) - (state_trump_votes + state_biden_votes)
    if state_trump_expected > state_biden_expected:
       trump_electoral_votes += race['electoral_votes']
-      print('{:<20s} {:<10s}'.format(race['state_name'], 'R +' + str(race['electoral_votes'])),end='')
+      winning = 'R'
+      if state_trump_votes - state_biden_votes > remaining:
+         winning = Color.RED + 'R' + Color.END
+      print('{:<20s} {:<10s}'.format(race['state_name'], winning + ' +' + str(race['electoral_votes'])),end='')
    else:
       biden_electoral_votes += race['electoral_votes']
-      print('{:<20s} {:<10s}'.format(race['state_name'], 'D +' + str(race['electoral_votes'])),end='')
+      winning = 'D'
+      if state_biden_votes - state_trump_votes > remaining:
+         winning = Color.BLUE + 'D' + Color.END
+      print('{:<20s} {:<10s}'.format(race['state_name'], winning + ' +' + str(race['electoral_votes'])),end='')
    gap = abs(state_trump_expected - state_biden_expected)
-   print(' Expected Gap: ' + str(gap), end='')
+   print('\tExpected Gap: ' + str(gap), end='')
    percent_gap = (gap * 100.0) / (state_trump_expected + state_biden_expected)
    print('{:<12s} {:<10s}'.format('\t(' + format(percent_gap,'.2f') + '%)'
-         ,'Remaining: ' + str((state_trump_expected + state_biden_expected) - (state_trump_votes + state_biden_votes))))
+         ,'Remaining: ' + str(remaining)))
 
 print('\nTrump electoral votes: ' + str(trump_electoral_votes))
 print('Biden electoral votes: ' + str(biden_electoral_votes))
